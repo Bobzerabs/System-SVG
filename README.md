@@ -1,6 +1,6 @@
 # SVG HUD Cleaner
 
-Sistema simples em **HTML, CSS e JavaScript** para corrigir SVGs exportadas do Figma e preparar ícones para uso em HUDs no MTA:SA.
+Sistema simples em **HTML, CSS e JavaScript** para corrigir SVGs exportadas do Figma e preparar ícones para uso no MTA:SA e Projetos.
 
 O projeto foi feito para resolver um problema comum: o SVG parecer pequeno dentro do jogo mesmo quando a posição e o tamanho foram copiados corretamente do Figma.
 
