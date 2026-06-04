@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SVG HUD Cleaner</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <div>
+        <span class="tag">MTA HUD • SVG Cleaner</span>
+        <h1>Corrigir SVG para HUD</h1>
+        <p>
+          Envie sua SVG, valide a resolução e corrija a área interna do arquivo.
+          O sistema remove margens invisíveis, filtros e sobras que podem deixar o ícone pequeno no MTA.
+        </p>
+      </div>
+
+      <div class="status-card">
+        <strong>Status</strong>
+        <span id="statusText">Aguardando SVG...</span>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <div class="tabs">
+          <button class="tab active" data-tab="uploadTab">SVG</button>
+          <button class="tab" data-tab="figmaTab">Figma</button>
+          <button class="tab" data-tab="optionsTab">Opções</button>
+        </div>
+
+        <div class="tab-content active" id="uploadTab">
+          <h2>1. Enviar SVG</h2>
+
+          <label class="dropzone" id="dropzone">
+            <input type="file" id="svgInput" accept=".svg,image/svg+xml" />
+            <span class="drop-icon">⬆</span>
+            <strong>Clique ou arraste sua SVG aqui</strong>
+            <small>Use arquivos exportados do Figma em SVG.</small>
+          </label>
+
+          <div class="file-info" id="fileInfo">
+            Nenhuma SVG selecionada.
+          </div>
+
+          <h2>2. Resolução</h2>
+
+          <div class="form-group">
+            <label for="resolutionPreset">Modelo rápido</label>
+            <select id="resolutionPreset">
+              <option value="">Selecionar resolução...</option>
+              <option value="1336x768">1336x768 - Figma atual</option>
+              <option value="1366x768">1366x768</option>
+              <option value="1600x900">1600x900</option>
+              <option value="1920x1080">1920x1080</option>
+              <option value="2560x1440">2560x1440</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="resolutionInput">Digite a resolução</label>
+            <input id="resolutionInput" type="text" placeholder="Ex: 1920x1080" />
+            <small id="resolutionHelp">Formato obrigatório: largura x altura. Exemplo: 1920x1080</small>
+          </div>
+
+          <div class="resolution-result" id="resolutionResult">
+            Nenhuma resolução validada.
+          </div>
+        </div>
+
+        <div class="tab-content" id="figmaTab">
+          <h2>Informações do Figma</h2>
+          <p class="mini-text">
+            Aba opcional para guardar as informações copiadas do painel direito do Figma junto com o salvamento.
+          </p>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="figmaName">Nome/ID</label>
+              <input id="figmaName" type="text" placeholder="Ex: Discord" />
+            </div>
+            <div class="form-group">
+              <label for="figmaResource">Parent</label>
+              <input id="figmaResource" type="text" value="infos" placeholder="Ex: infos" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="figmaX">Alinhamento X</label>
+              <input id="figmaX" type="number" step="0.01" placeholder="Ex: 168" />
+            </div>
+            <div class="form-group">
+              <label for="figmaY">Alinhamento Y</label>
+              <input id="figmaY" type="number" step="0.01" placeholder="Ex: 45" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="figmaW">Largura / L</label>
+              <input id="figmaW" type="number" step="0.01" placeholder="Ex: 12" />
+            </div>
+            <div class="form-group">
+              <label for="figmaH">Altura / A</label>
+              <input id="figmaH" type="number" step="0.01" placeholder="Ex: 12" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="figmaRotation">Rotação</label>
+              <input id="figmaRotation" type="number" step="0.01" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="figmaOpacity">Opacidade</label>
+              <input id="figmaOpacity" type="number" step="1" min="0" max="100" value="100" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="svgPathInput">Caminho no resource</label>
+            <input id="svgPathInput" type="text" placeholder="nui/interface/Discord.svg" />
+          </div>
+
+          <div class="figma-result" id="figmaResult">
+            Preencha as informações que quiser salvar junto da SVG.
+          </div>
+
+          <button id="fillFromSvgBtn" class="btn">Usar tamanho final da SVG em L/A</button>
+        </div>
+
+        <div class="tab-content" id="optionsTab">
+          <h2>Opções de correção</h2>
+
+          <label class="check">
+            <input type="checkbox" id="removeDefs" checked />
+            <span>Remover <code>defs</code>, filtros e sombras</span>
+          </label>
+
+          <label class="check">
+            <input type="checkbox" id="trimSvg" checked />
+            <span>Remover espaço invisível interno</span>
+          </label>
+
+          <label class="check">
+            <input type="checkbox" id="forceWhite" />
+            <span>Forçar preenchimento branco nos paths</span>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="processBtn" class="btn primary">Corrigir SVG</button>
+          <button id="saveBtn" class="btn">Salvar</button>
+          <button id="downloadBtn" class="btn">Baixar SVG</button>
+          <button id="copyBtn" class="btn">Copiar SVG</button>
+        </div>
+      </div>
+
+      <div class="panel preview-panel">
+        <div class="preview-header">
+          <h2>Prévia</h2>
+          <button id="clearHistoryBtn" class="btn danger">Limpar salvamentos</button>
+        </div>
+
+        <div class="meta" id="metaBox">
+          Envie uma SVG para visualizar as informações.
+        </div>
+
+        <div class="preview-grid">
+          <div>
+            <h3>Original</h3>
+            <div class="svg-preview" id="originalPreview">
+              <span>Nenhum arquivo</span>
+            </div>
+          </div>
+
+          <div>
+            <h3>Corrigida</h3>
+            <div class="svg-preview" id="fixedPreview">
+              <span>Aguardando processamento</span>
+            </div>
+          </div>
+        </div>
+
+        <h3>SVG corrigida</h3>
+        <textarea id="outputCode" spellcheck="false" placeholder="A SVG corrigida aparecerá aqui..."></textarea>
+      </div>
+    </section>
+  </main>
+
+  <aside class="history-box" id="historyBox">
+    <div class="history-title">
+      <div class="history-label">
+        <span>Salvamentos</span>
+        <small id="historyCount">0</small>
+      </div>
+
+      <button id="hideHistoryBtn" class="history-toggle" type="button" title="Ocultar salvamentos">
+        −
+      </button>
+    </div>
+
+    <div id="historyList" class="history-list"></div>
+  </aside>
+
+  <button id="showHistoryBtn" class="history-float" type="button" title="Mostrar salvamentos">
+    <span>💾</span>
+    <strong>Salvamentos</strong>
+    <small id="historyFloatCount">0</small>
+  </button>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
