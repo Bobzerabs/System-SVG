@@ -1,4 +1,4 @@
-# SVG HUD Cleaner
+# System SVG
 
 Sistema simples em **HTML, CSS e JavaScript** para corrigir SVGs exportadas do Figma e preparar ícones para uso no MTA:SA e Projetos.
 
